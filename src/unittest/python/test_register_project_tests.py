@@ -3,7 +3,7 @@ import unittest
 from datetime import date
 
 from uc3m_consulting import EnterpriseManager
-from uc3m_consulting import EnterpriseManagerException
+from uc3m_consulting import EnterpriseManagementException
 
 class MyTestCase(unittest.TestCase):
     """class for testing the register_order method"""
@@ -24,11 +24,26 @@ class MyTestCase(unittest.TestCase):
         department = "FINANCE"
         date = "01/01/2025"
         budget = 100000.00
-        with self.assertRaises(EnterpriseManagerException) as cm:
+        with self.assertRaises(EnterpriseManagementException) as cm:
             result = my_manager.register_project(company_cif=cif, project_acronym=acronym,
                                                  project_description=description, date=date,
                                                  department=department, budget=budget)
         self.assertEqual(cm.exception.message, "ERROR: CIF not valid, length")
+
+    def test_register_3( self ):
+        """Cif not valid"""
+        my_manager = EnterpriseManager()
+        cif = "A12345679"
+        acronym = "PEPESL"
+        description = "marketing de pepe"
+        department = "FINANCE"
+        date = "01/01/2025"
+        budget = 100000.00
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            result = my_manager.register_project(company_cif=cif, project_acronym=acronym,
+                                                 project_description=description, date=date,
+                                                 department=department, budget=budget)
+        self.assertEqual(cm.exception.message, "ERROR: CIF format not valid")
 
 
 if __name__ == '__main__':
