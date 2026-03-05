@@ -17,6 +17,5 @@ class EnterpriseManager:
 
     @staticmethod
     def validate_cif(cif: str):
-        """RETURNs TRUE IF THE IBAN RECEIVED IS VALID SPANISH IBAN,
-        OR FALSE IN OTHER CASE"""
-        return True
+        # hay que poner aqui nuestra funcion validate_cif del ejercicio 1
+        pass
