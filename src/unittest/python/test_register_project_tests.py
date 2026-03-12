@@ -3,7 +3,10 @@ import unittest
 from datetime import date
 
 from uc3m_consulting import EnterpriseManager
-from uc3m_consulting import EnterpriseManagerException
+
+
+
+
 
 class MyTestCase(unittest.TestCase):
     """class for testing the register_order method"""

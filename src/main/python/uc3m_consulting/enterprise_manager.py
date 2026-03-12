@@ -1,7 +1,9 @@
 """Module """
 import re
-from enterprise_management_exception import EnterpriseManagementException
+import os
 
+from enterprise_management_exception import EnterpriseManagementException
+from enterprise_project import EnterpriseProject
 class EnterpriseManager:
     """Class for providing the methods for managing the orders"""
     def __init__(self):
@@ -14,7 +16,22 @@ class EnterpriseManager:
         my_project = EnterpriseProject(company_cif=company_cif, project_acronym=project_acronym,
                                        department=department, project_budget=budget,
                                        project_description=project_description, starting_date=date)
-        return my_project.project_id
+
+
+        JSON_FILES_PATH = os.path.join( os.path.dirname(__file__), "../../../unittest/")
+        file_store = JSON_FILES_PATH + "register_store.json"
+        try:
+            with open(file_store, "r", encoding="utf-8",newline="") as file:
+                data_list = json.load(file)
+        except FileNotFoundError as ex:
+            data_list = []
+        except json.JSONDecodeError as ex:
+            raise EnterpriseManagementException("JSON Decode Error - Wrong JSOn Format")
+
+        data_list.append(my_project.to_json())
+
+
+
 
     @staticmethod
     def validate_cif(cif: str):
