@@ -2,6 +2,7 @@
 import re
 import os
 
+
 from enterprise_management_exception import EnterpriseManagementException
 from enterprise_project import EnterpriseProject
 class EnterpriseManager:
