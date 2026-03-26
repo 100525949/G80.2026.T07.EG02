@@ -91,5 +91,26 @@ class MyTestCase(unittest.TestCase):
                                         100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Description length not valid")
 
+    def test_10_invalid(self):
+        """Test 10 -> Departamento no permitido"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18/02/2026", "IT", 100000.00)
+        self.assertEqual(cm.exception.message, "ERROR: Department not valid")
+
+    def test_11_invalid(self):
+        """Test 11 -> Fecha anterior a 2025"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "31/12/2024", "HR", 100000.00)
+        self.assertEqual(cm.exception.message, "ERROR: Date out of range")
+
+    def test_12_invalid(self):
+        """Test 12 -> Fecha posterior a 2027"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "01/01/2028", "HR", 100000.00)
+        self.assertEqual(cm.exception.message, "ERROR: Date out of range")
+
 if __name__ == '__main__':
     unittest.main()
