@@ -1,7 +1,7 @@
 """Module """
+import json
 import re
 import os
-
 from enterprise_management_exception import EnterpriseManagementException
 from enterprise_project import EnterpriseProject
 class EnterpriseManager:
@@ -19,19 +19,25 @@ class EnterpriseManager:
 
 
         JSON_FILES_PATH = os.path.join( os.path.dirname(__file__), "../../../unittest/")
-        file_store = JSON_FILES_PATH + "register_store.json"
+        file_store = JSON_FILES_PATH + "corporate_operations.json"
         try:
             with open(file_store, "r", encoding="utf-8",newline="") as file:
                 data_list = json.load(file)
-        except FileNotFoundError as ex:
+        except FileNotFoundError:
             data_list = []
-        except json.JSONDecodeError as ex:
-            raise EnterpriseManagementException("JSON Decode Error - Wrong JSOn Format")
+        except json.JSONDecodeError:
+            raise EnterpriseManagementException("JSON Decode Error - Wrong JSON Format")
+
+        for item in data_list:
+            if item.get("company_cif") == company_cif and item.get("project_acronym") == project_acronym:
+                raise EnterpriseManagementException("ERROR: Project already exists")
 
         data_list.append(my_project.to_json())
-
-
-
+        # Guardar los datos de vuelta en el JSON
+        with open(file_store, "w", encoding="utf-8", newline="") as file:
+            json.dump(data_list, file, indent=4)
+        #devuelve el identificador del proyecto
+        return my_project.project_id
 
     @staticmethod
     def validate_cif(cif: str):
@@ -63,5 +69,3 @@ class EnterpriseManager:
             return control == letra_control
         else:
             return False
-
-        pass
