@@ -112,5 +112,58 @@ class MyTestCase(unittest.TestCase):
             my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "01/01/2028", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Date out of range")
 
+    def test_13_invalid(self):
+        """Test 13 -> Fecha formato incorrecto"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18-02-2026", "HR", 100000.00)
+        self.assertEqual(cm.exception.message, "ERROR: Date format not valid")
+
+    def test_14_invalid(self):
+        """Test 14 -> Presupuesto límite inf. (< 50k)"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18/02/2026", "HR", 49999.99)
+        self.assertEqual(cm.exception.message, "ERROR: Budget out of range")
+
+    def test_15_invalid(self):
+        """Test 15 -> Presupuesto límite sup. (> 1M)"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18/02/2026", "HR", 1000000.01)
+        self.assertEqual(cm.exception.message, "ERROR: Budget out of range")
+
+    def test_16_invalid(self):
+        """Test 16 -> CIF longitud incorrecta"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004", "PROJ01", "Descrip valida", "18/02/2026", "HR", 100000.00)
+        self.assertEqual(cm.exception.message, "ERROR: CIF format not valid")
+
+    def test_17_invalid(self):
+        """Test 17 -> CIF letra control incorrecta"""
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project("Q2812004A", "PROJ01", "Descrip valida", "18/02/2026", "HR", 100000.00)
+        self.assertEqual(cm.exception.message, "ERROR: CIF not valid")
+
+    def test_18_invalid(self):
+        """Test 18 -> Proyecto duplicado (mismo cif y acro)"""
+        my_manager = EnterpriseManager()
+
+        my_manager.register_project(
+            company_cif="Q2812004I", project_acronym="PROJ01",
+            project_description="Descrip valida", department="HR",
+            date="18/02/2026", budget=100000.00
+        )
+
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_project(
+                company_cif="Q2812004I", project_acronym="PROJ01",
+                project_description="Descrip valida", department="HR",
+                date="18/02/2026", budget=100000.00
+            )
+        self.assertEqual(cm.exception.message, "ERROR: Project already exists")
+
 if __name__ == '__main__':
     unittest.main()
