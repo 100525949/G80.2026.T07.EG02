@@ -14,28 +14,45 @@ class MyTestCase(unittest.TestCase):
         if os.path.exists(json_path):
             os.remove(json_path)
 
-    def test_valid_1(self):
-        """Caso válido base"""
+    def test_01_valid(self):
+        """Test 1 -> Caso válido base"""
         my_manager = EnterpriseManager()
-
-        cif = "Q2812004I"
-        acronym = "PROJ01"
-        description = "Descripcion valida"
-        department = "HR"
-        date = "18/02/2026"
-        budget = 50000.00
-
         valor_devuelto = my_manager.register_project(
-            company_cif=cif,
-            project_acronym=acronym,
-            project_description=description,
-            date=date,
-            department=department,
-            budget=budget
+            company_cif="Q2812004I", project_acronym="PROJ01",
+            project_description="Descrip valida", department="HR",
+            date="18/02/2026", budget=100000.00
         )
-
-        # comprobamos que devuelve un string de 32 caracteres
         self.assertIsInstance(valor_devuelto, str)
+        self.assertEqual(len(valor_devuelto), 32)
+
+    def test_02_valid(self):
+        """Test 2 valido -> acrónimo límite inferior (5 char)"""
+        my_manager = EnterpriseManager()
+        valor_devuelto = my_manager.register_project(
+            company_cif="Q2812004I", project_acronym="PROJ0",
+            project_description="Descrip valida", department="HR",
+            date="18/02/2026", budget=100000.00
+        )
+        self.assertEqual(len(valor_devuelto), 32)
+
+    def test_03_valid(self):
+        """Test 3 valido -> Acrónimo límite superior (10 char)"""
+        my_manager = EnterpriseManager()
+        valor_devuelto = my_manager.register_project(
+            company_cif="Q2812004I", project_acronym="PROJ012345",
+            project_description="Descrip valida", department="HR",
+            date="18/02/2026", budget=100000.00
+        )
+        self.assertEqual(len(valor_devuelto), 32)
+
+    def test_04_valid(self):
+        """Test 4 valido -> Presupuesto límite inferior (50k)"""
+        my_manager = EnterpriseManager()
+        valor_devuelto = my_manager.register_project(
+            company_cif="Q2812004I", project_acronym="PROJ01",
+            project_description="Descrip valida", department="HR",
+            date="18/02/2026", budget=50000.00
+        )
         self.assertEqual(len(valor_devuelto), 32)
 
     def test_register_2_cif_invalid(self):
