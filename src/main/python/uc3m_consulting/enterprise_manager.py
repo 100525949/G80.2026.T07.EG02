@@ -1,8 +1,6 @@
 """Module """
 import re
 import os
-import json
-from project_document import ProjectDocument
 
 from enterprise_management_exception import EnterpriseManagementException
 from enterprise_project import EnterpriseProject
@@ -32,10 +30,6 @@ class EnterpriseManager:
 
         data_list.append(my_project.to_json())
 
-        with open (file_store, "w", encoding="utf-8", newline="") as file:
-            json.dump(data_list, file, indent=2)
-
-        return my_project.project_id
 
 
 
@@ -71,50 +65,3 @@ class EnterpriseManager:
             return False
 
         pass
-
-    def register_document(self, input_file: str ) -> str:
-
-        try:
-            with open(input_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-        except FileNotFoundError:
-            raise EnterpriseManagementException("Error : Input file not found")
-        except json.JSONDecodeError:
-            raise EnterpriseManagementException("Error: File is not valid JSON")
-
-
-        if "PROJECT_ID" not in data or "FILENAME" not in data:
-            raise EnterpriseManagementException("Error: JSON missing required keys")
-
-        project_id = data["PROJECT_ID"]
-        filename = data["FILENAME"]
-
-        if not re.match(r'^[0-9a-f]{32}$',project_id):
-            raise EnterpriseManagementException("Error:PROJECT_ID not valid")
-        if not re.match(r'^[a-zA-Z0-9]{8}\.(pdf|docx|xlsx)$',filename):
-            raise EnterpriseManagementException("Error: FILENAME not valid")
-
-        try:
-            doc = ProjectDocument(project_id=project_id, file_name=filename)
-            signature = doc.document_signature
-        except Exception as ex :
-            raise EnterpriseManagementException("Error: Internal processing error") from ex
-
-        JSON_FILES_PATH = os.path.join(os.path.dirname(__file__),"../../../unittest/")
-        file_store = JSON_FILES_PATH + "document_store.json"
-        try:
-            with open(file_store, "r", encoding="utf-8")as file:
-                doc_list = json.load(file)
-        except FileNotFoundError:
-            doc_list = []
-        except json.JSONDecodeError:
-            raise EnterpriseManagementException("JSON Decode Error - Wrong JSON Format")
-
-        doc_list.append(doc.to_json())
-
-        with open(file_store,"w", encoding="utf-8") as file:
-            json.dump(doc_list, file, indent=2)
-
-        return signature
-
-

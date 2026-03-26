@@ -1,0 +1,82 @@
+[
+  {
+    "PROJECT_ID": "ff341ef03100429eacdfea777d6bdd56",
+    "outflow": "1280.06"
+  },
+  {
+    "PROJECT_ID": "640eb05afeb0038c01613c201c037707",
+    "outflow": "3094.85"
+  },
+  {
+    "PROJECT_ID": "ff341ef03100429eacdfea777d6bdd56",
+    "inflow": "2424.42"
+  },
+  {
+    "PROJECT_ID": "640eb05afeb0038c01613c201c037707",
+    "outflow": "1258.75"
+  },
+  {
+    "PROJECT_ID": "ff341ef03100429eacdfea777d6bdd56",
+    "outflow": "1021.97"
+  },
+  {
+    "PROJECT_ID": "87ccf7f87efbc1d8ddda1f689291b208",
+    "outflow": "4470.37"
+  },
+  {
+    "PROJECT_ID": "53474ec11ff2175359b957aeb3ae2f8d",
+    "outflow": "1643.06"
+  },
+  {
+    "PROJECT_ID": "ff341ef03100429eacdfea777d6bdd56",
+    "outflow": "4795.05"
+  },
+  {
+    "PROJECT_ID": "87ccf7f87efbc1d8ddda1f689291b208",
+    "inflow": "2265.68"
+  },
+  {
+    "PROJECT_ID": "87ccf7f87efbc1d8ddda1f689291b208",
+    "inflow": "759.39"
+  },
+  {
+    "PROJECT_ID": "ff341ef03100429eacdfea777d6bdd56",
+    "inflow": "1407.49"
+  },
+  {
+    "PROJECT_ID": "53474ec11ff2175359b957aeb3ae2f8d",
+    "outflow": "3263.04"
+  },
+  {
+    "PROJECT_ID": "53474ec11ff2175359b957aeb3ae2f8d",
+    "outflow": "2768.05"
+  },
+  {
+    "PROJECT_ID": "640eb05afeb0038c01613c201c037707",
+    "outflow": "3805.22"
+  },
+  {
+    "PROJECT_ID": "53474ec11ff2175359b957aeb3ae2f8d",
+    "inflow": "4611.51"
+  },
+  {
+    "PROJECT_ID": "53474ec11ff2175359b957aeb3ae2f8d",
+    "outflow": "1118.72"
+  },
+  {
+    "PROJECT_ID": "640eb05afeb0038c01613c201c037707",
+    "inflow": "4661.96"
+  },
+  {
+    "PROJECT_ID": "87ccf7f87efbc1d8ddda1f689291b208",
+    "inflow": "4028.28"
+  },
+  {
+    "PROJECT_ID": "87ccf7f87efbc1d8ddda1f689291b208",
+    "outflow": "2213.49"
+  },
+  {
+    "PROJECT_ID": "640eb05afeb0038c01613c201c037707",
+    "inflow": "3981.26"
+  }
+]
