@@ -1,8 +1,8 @@
 """class for testing the register_project method"""
 import unittest
 import os
-from enterprise_manager import EnterpriseManager
-from enterprise_management_exception import EnterpriseManagementException
+from uc3m_consulting.enterprise_manager import EnterpriseManager
+from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 
 class MyTestCase(unittest.TestCase):
     """class for testing the register_project method"""
