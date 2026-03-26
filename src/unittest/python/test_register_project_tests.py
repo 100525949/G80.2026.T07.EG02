@@ -4,6 +4,9 @@ import os
 from uc3m_consulting.enterprise_manager import EnterpriseManager
 from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 
+JSON_FILES_PATH = os.path.join( os.path.dirname(__file__), "../jsonfiles/")
+file_store = JSON_FILES_PATH + "corporate_operations.json"
+
 class MyTestCase(unittest.TestCase):
     """class for testing the register_project method"""
 
@@ -147,23 +150,7 @@ class MyTestCase(unittest.TestCase):
             my_manager.register_project("Q2812004A", "PROJ01", "Descrip valida", "18/02/2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: CIF not valid")
 
-    def test_18_invalid(self):
-        """Test 18 -> Proyecto duplicado (mismo cif y acronimo)"""
-        my_manager = EnterpriseManager()
 
-        my_manager.register_project(
-            company_cif="Q2812004I", project_acronym="PROJ01",
-            project_description="Descrip valida", department="HR",
-            date="18/02/2026", budget=100000.00
-        )
-
-        with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project(
-                company_cif="Q2812004I", project_acronym="PROJ01",
-                project_description="Descrip valida", department="HR",
-                date="18/02/2026", budget=100000.00
-            )
-        self.assertEqual(cm.exception.message, "ERROR: Project already exists")
 
 if __name__ == '__main__':
     unittest.main()

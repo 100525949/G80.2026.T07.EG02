@@ -1,9 +1,11 @@
 """Module """
+import json
 import re
 import os
+from datetime import datetime
+from .enterprise_management_exception import EnterpriseManagementException
+from .enterprise_project import EnterpriseProject
 
-from enterprise_management_exception import EnterpriseManagementException
-from enterprise_project import EnterpriseProject
 class EnterpriseManager:
     """Class for providing the methods for managing the orders"""
     def __init__(self):
@@ -13,25 +15,36 @@ class EnterpriseManager:
                          project_description: str, date: str,
                          department: str, budget: float) -> str:
         self.validate_cif(company_cif)
+        self.validate_acronym(project_acronym)
+        self.validate_description(project_description)
+        self.validate_department(department)
+        self.validate_date(date)
+        self.validate_budget(budget)
+
         my_project = EnterpriseProject(company_cif=company_cif, project_acronym=project_acronym,
                                        department=department, project_budget=budget,
                                        project_description=project_description, starting_date=date)
 
 
         JSON_FILES_PATH = os.path.join( os.path.dirname(__file__), "../../../unittest/")
-        file_store = JSON_FILES_PATH + "register_store.json"
+        file_store = JSON_FILES_PATH + "corporate_operations.json"
+
         try:
             with open(file_store, "r", encoding="utf-8",newline="") as file:
                 data_list = json.load(file)
-        except FileNotFoundError as ex:
+        except FileNotFoundError:
             data_list = []
-        except json.JSONDecodeError as ex:
-            raise EnterpriseManagementException("JSON Decode Error - Wrong JSOn Format")
+        except json.JSONDecodeError:
+            raise EnterpriseManagementException("JSON Decode Error - Wrong JSON Format")
+
+        for item in data_list:
+            if item.get("company_cif") == company_cif and item.get("project_acronym") == project_acronym:
+                raise EnterpriseManagementException("ERROR: Project already exists")
 
         data_list.append(my_project.to_json())
-
-
-
+        with open(file_store, "w", encoding="utf-8", newline="") as file:
+            json.dump(data_list, file, indent=4)
+        return my_project.project_id
 
     @staticmethod
     def validate_cif(cif: str):
@@ -56,12 +69,49 @@ class EnterpriseManager:
 
         num_control = (10 - unidad) % 10
         letra_control = 'JABCDEFGHI'[num_control]
-
+        valid_control = False
         if letras_tipo in 'ABEH':
-            return control == str(num_control)
+            valid_control = control == str(num_control)
         elif letras_tipo in 'KPQS':
-            return control == letra_control
-        else:
-            return False
+            valid_control = control == letra_control
 
-        pass
+        if not valid_control:
+            raise EnterpriseManagementException("ERROR: CIF not valid")
+
+    @staticmethod
+    def validate_acronym(acronym: str):
+        """Valida longitud (5 a 10) y formato (solo alfanumérico)"""
+        if not re.match(r'^[a-zA-Z0-9]+$', acronym):
+            raise EnterpriseManagementException("ERROR: Acronym format not valid")
+        if len(acronym) < 5 or len(acronym) > 10:
+            raise EnterpriseManagementException("ERROR: Acronym length not valid")
+
+    @staticmethod
+    def validate_description(description: str):
+        """Valida longitud de la descripción (10 a 30 caracteres)"""
+        if len(description) < 10 or len(description) > 30:
+            raise EnterpriseManagementException("ERROR: Description length not valid")
+
+    @staticmethod
+    def validate_department(department: str):
+        """Valida que el departamento sea uno de los permitidos"""
+        valid_departments = ["HR", "FINANCE", "LEGAL", "LOGISTICS"]
+        if department not in valid_departments:
+            raise EnterpriseManagementException("ERROR: Department not valid")
+
+    @staticmethod
+    def validate_date(date_str: str):
+        """Valida el formato de fecha (DD/MM/YYYY) y el rango (2025 a 2027)"""
+        try:
+            date_obj = datetime.strptime(date_str, "%d/%m/%Y")
+        except ValueError:
+            raise EnterpriseManagementException("ERROR: Date format not valid")
+
+        if date_obj.year < 2025 or date_obj.year > 2027:
+            raise EnterpriseManagementException("ERROR: Date out of range")
+
+    @staticmethod
+    def validate_budget(budget: float):
+        """Valida que el presupuesto esté entre 50.000 y 1.000.000"""
+        if budget < 50000.00 or budget > 1000000.00:
+            raise EnterpriseManagementException("ERROR: Budget out of range")
