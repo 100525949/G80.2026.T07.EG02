@@ -148,7 +148,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.message, "ERROR: CIF not valid")
 
     def test_18_invalid(self):
-        """Test 18 -> Proyecto duplicado (mismo cif y acro)"""
+        """Test 18 -> Proyecto duplicado (mismo cif y acronimo)"""
         my_manager = EnterpriseManager()
 
         my_manager.register_project(
