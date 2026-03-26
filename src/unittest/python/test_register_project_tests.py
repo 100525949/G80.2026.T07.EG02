@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
     def setUp(self):
         """Se ejecuta antes de cada test para borrar el json y asegurar que los tests
         empiezan limpios"""
-        json_path = os.path.join(os.path.dirname(__file__), "../../../unittest/corporate_operations.json")
+        json_path = os.path.join(os.path.dirname(__file__), "../corporate_operations.json")
         if os.path.exists(json_path):
             os.remove(json_path)
 
@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
         """Test 1 valido -> Caso válido base"""
         my_manager = EnterpriseManager()
         valor_devuelto = my_manager.register_project(
-            company_cif="Q2812004I", project_acronym="PROJ01",
+            company_cif="Q2812004F", project_acronym="PROJ01",
             project_description="Descrip valida", department="HR",
             date="18/02/2026", budget=100000.00
         )
@@ -32,7 +32,7 @@ class MyTestCase(unittest.TestCase):
         """Test 2 valido -> acrónimo límite inferior (5 char)"""
         my_manager = EnterpriseManager()
         valor_devuelto = my_manager.register_project(
-            company_cif="Q2812004I", project_acronym="PROJ0",
+            company_cif="Q2812004F", project_acronym="PROJ0",
             project_description="Descrip valida", department="HR",
             date="18/02/2026", budget=100000.00
         )
@@ -42,7 +42,7 @@ class MyTestCase(unittest.TestCase):
         """Test 3 valido -> Acrónimo límite superior (10 char)"""
         my_manager = EnterpriseManager()
         valor_devuelto = my_manager.register_project(
-            company_cif="Q2812004I", project_acronym="PROJ012345",
+            company_cif="Q2812004F", project_acronym="PROJ012345",
             project_description="Descrip valida", department="HR",
             date="18/02/2026", budget=100000.00
         )
@@ -52,7 +52,7 @@ class MyTestCase(unittest.TestCase):
         """Test 4 valido -> Presupuesto límite inferior (50k)"""
         my_manager = EnterpriseManager()
         valor_devuelto = my_manager.register_project(
-            company_cif="Q2812004I", project_acronym="PROJ01",
+            company_cif="Q2812004F", project_acronym="PROJ01",
             project_description="Descrip valida", department="HR",
             date="18/02/2026", budget=50000.00
         )
@@ -62,35 +62,35 @@ class MyTestCase(unittest.TestCase):
         """Test 5 invalido -> Acrónimo límite inferior (4 char)"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ", "Descrip valida", "18/02/2026", "HR", 100000.00)
+            my_manager.register_project("Q2812004F", "PROJ", "Descrip valida", "18/02/2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Acronym length not valid")
 
     def test_06_invalid(self):
         """Test 6 invalido -> Acrónimo límite superior (11 char)"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ0123456", "Descrip valida", "18/02/2026", "HR", 100000.00)
+            my_manager.register_project("Q2812004F", "PROJ0123456", "Descrip valida", "18/02/2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Acronym length not valid")
 
     def test_07_invalid(self):
         """Test 7 invalido -> Acrónimo caracteres no válidos"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PR-J01", "Descrip valida", "18/02/2026", "HR", 100000.00)
+            my_manager.register_project("Q2812004F", "PR-J01", "Descrip valida", "18/02/2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Acronym format not valid")
 
     def test_08_invalid(self):
         """Test 8 -> Descripción límite inf. (9 char)"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Descr. 9c", "18/02/2026", "HR", 100000.00)
+            my_manager.register_project("Q2812004F", "PROJ01", "Descr. 9c", "18/02/2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Description length not valid")
 
     def test_09_invalid(self):
         """Test 9 -> Descripción límite sup. (31 char)"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Esta descripcion tiene 31 chars", "18/02/2026", "HR",
+            my_manager.register_project("Q2812004F", "PROJ01", "Esta descripcion tiene 31 chars", "18/02/2026", "HR",
                                         100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Description length not valid")
 
@@ -98,42 +98,42 @@ class MyTestCase(unittest.TestCase):
         """Test 10 -> Departamento no permitido"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18/02/2026", "IT", 100000.00)
+            my_manager.register_project("Q2812004F", "PROJ01", "Descrip valida", "18/02/2026", "IT", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Department not valid")
 
     def test_11_invalid(self):
         """Test 11 -> Fecha anterior a 2025"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "31/12/2024", "HR", 100000.00)
+            my_manager.register_project("Q2812004F", "PROJ01", "Descrip valida", "31/12/2024", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Date out of range")
 
     def test_12_invalid(self):
         """Test 12 -> Fecha posterior a 2027"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "01/01/2028", "HR", 100000.00)
+            my_manager.register_project("Q2812004F", "PROJ01", "Descrip valida", "01/01/2028", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Date out of range")
 
     def test_13_invalid(self):
         """Test 13 -> Fecha formato incorrecto"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18-02-2026", "HR", 100000.00)
+            my_manager.register_project("Q2812004F", "PROJ01", "Descrip valida", "18-02-2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: Date format not valid")
 
     def test_14_invalid(self):
         """Test 14 -> Presupuesto límite inf. (< 50k)"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18/02/2026", "HR", 49999.99)
+            my_manager.register_project("Q2812004F", "PROJ01", "Descrip valida", "18/02/2026", "HR", 49999.99)
         self.assertEqual(cm.exception.message, "ERROR: Budget out of range")
 
     def test_15_invalid(self):
         """Test 15 -> Presupuesto límite sup. (> 1M)"""
         my_manager = EnterpriseManager()
         with self.assertRaises(EnterpriseManagementException) as cm:
-            my_manager.register_project("Q2812004I", "PROJ01", "Descrip valida", "18/02/2026", "HR", 1000000.01)
+            my_manager.register_project("Q2812004F", "PROJ01", "Descrip valida", "18/02/2026", "HR", 1000000.01)
         self.assertEqual(cm.exception.message, "ERROR: Budget out of range")
 
     def test_16_invalid(self):
@@ -149,8 +149,6 @@ class MyTestCase(unittest.TestCase):
         with self.assertRaises(EnterpriseManagementException) as cm:
             my_manager.register_project("Q2812004A", "PROJ01", "Descrip valida", "18/02/2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: CIF not valid")
-
-
 
 if __name__ == '__main__':
     unittest.main()
