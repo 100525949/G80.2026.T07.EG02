@@ -7,7 +7,7 @@ class ProjectDocument():
 
     def __init__(self, project_id: str, file_name):
         self.__alg = "SHA-256"
-        self.__type = "DEPOSIT"
+        self.__type = "DOCUMENT"
         self.__project_id = project_id
         self.__file_name = file_name
         justnow = datetime.now(timezone.utc)
@@ -20,7 +20,7 @@ class ProjectDocument():
                 "project_id": self.__project_id,
                 "file_name": self.__file_name,
                 "register_date": self.__register_date,
-                "document_signature": self.document_signature}
+                "file_signature": self.document_signature}
 
     def __signature_string(self):
         """Composes the string to be used for generating the key for the date"""
