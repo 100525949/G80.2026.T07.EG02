@@ -47,6 +47,17 @@ class EnterpriseManager:
             json.dump(data_list, file, indent=4)
         return my_project.project_id
 
+    def register_document(self, input_file: str) -> str:
+        """Registers a document from a JSON file and returns its SHA-256 signature"""
+        # lee el json de entrada
+        try:
+            with open(input_file, "r", encoding="utf-8") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            raise EnterpriseManagementException("File is not found")
+        except json.JSONDecodeError:
+            raise EnterpriseManagementException("JSON Decode Error - File is not valid JSON")
+
     @staticmethod
     def validate_cif(cif: str):
         cif = cif.upper()
