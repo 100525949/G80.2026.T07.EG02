@@ -150,6 +150,14 @@ class EnterpriseManager:
                         total_outflow += float(flow["outflow"])
                     except ValueError:
                         pass
+        # si no se encuentra el proyecto, lanzamos excepción
+        if not project_found:
+            raise EnterpriseManagementException("ERROR: PROJECT_ID not found in flows.json")
+
+        final_balance = total_inflow - total_outflow
+        result_file = os.path.join(json_files_path, "project_balances.json")
+
+
 
     @staticmethod
     def validate_cif(cif: str):
