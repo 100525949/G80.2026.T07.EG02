@@ -1,0 +1,152 @@
+"""class for testing the register_document method"""
+import unittest
+import os
+from uc3m_consulting.enterprise_manager import EnterpriseManager
+from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
+
+JSON_FILES_PATH = os.path.join( os.path.dirname(__file__), "../jsonfiles/")
+
+class TestRegisterDocument(unittest.TestCase):
+    """class for testing the register_document method"""
+
+    # tests del metodo 2
+    def _create_temp_file(self, filename: str, content: str) -> str:
+        """función para crear archivos json temporales en los tests"""
+        file_path = os.path.join(JSON_FILES_PATH, filename)
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        return file_path
+
+    def test_18_valid(self):
+        """Test 1 metodo 2 -> Caso válido base"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_01_valid.json", content)
+
+        my_manager = EnterpriseManager()
+        valor_devuelto = my_manager.register_document(file_path)
+
+        self.assertIsInstance(valor_devuelto, str)
+        self.assertEqual(len(valor_devuelto), 64)
+        os.remove(file_path)
+
+    def test_19_invalid(self):
+        """Test 2 metodo 2 -> omisión de la clave PROJECT_ID"""
+        content = '{"FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_02_omit_id.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON does not have the expected structure")
+        os.remove(file_path)
+
+    def test_20_invalid(self):
+        """Test 3 metodo 2 -> omisión de FILENAME"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"}'
+        file_path = self._create_temp_file("test_03_omit_name.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON does not have the expected structure")
+        os.remove(file_path)
+
+    def test_21_invalid(self):
+        """Test 4 metodo 2 ->  PROJECT_ID duplicado"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "PROJECT_ID": "f6b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_04_dup_id.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
+        os.remove(file_path)
+
+    def test_22_invalid(self):
+        """Test 5 metodo 2 -> clave mal escrita"""
+        content = '{"PROYECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_05_mod_key.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON does not have the expected structure")
+        os.remove(file_path)
+
+    def test_23_invalid(self):
+        """Test 6 metodo 2 -> Valor PROJECT_ID corto"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_06_mod_len.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
+        os.remove(file_path)
+
+    def test_24_invalid(self):
+        """Test 7  metodo 2 -> PROJECT_ID con letra no hexadecimal"""
+        content = '{"PROJECT_ID": "Z1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_07_mod_hex.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
+        os.remove(file_path)
+
+    def test_25_invalid(self):
+        """Test 8 metodo 2 -> FILENAME corto"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum01.pdf"}'
+        file_path = self._create_temp_file("test_08_mod_flen.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: FILENAME")
+        os.remove(file_path)
+
+    def test_26_invalid(self):
+        """Test 9 metodo 2 -> FILENAME con carácter no permitido (-)"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "doc-0001.pdf"}'
+        file_path = self._create_temp_file("test_09_mod_fchar.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: FILENAME")
+        os.remove(file_path)
+
+    def test_27_invalid(self):
+        """Test 10 metodo 2 -> extension del archivo no es válida (.txt)"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.txt"}'
+        file_path = self._create_temp_file("test_10_mod_ext.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: FILENAME")
+        os.remove(file_path)
+
+    def test_28_invalid(self):
+        """Test 11 metodo 2 -> falta la llave de cierre (genera Syntax Error)"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"'
+        file_path = self._create_temp_file("test_11_del_brace.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON Decode Error - File is not valid JSON")
+        os.remove(file_path)
+
+    def test_29_invalid(self):
+        """Test 12 metodo 2 -> ruta inexistente (el archivo no existe)"""
+        fake_path = os.path.join(JSON_FILES_PATH, "ruta_falsa_test_12.json")
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(fake_path)
+        self.assertEqual(cm.exception.message, "File is not found")
+
+if __name__ == '__main__':
+    unittest.main()
