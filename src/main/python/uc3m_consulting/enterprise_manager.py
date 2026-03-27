@@ -71,6 +71,24 @@ class EnterpriseManager:
         if not isinstance(file_name, str) or not re.match(r'^[a-zA-Z0-9]{8}\.(pdf|docx|xlsx)$', file_name):
             raise EnterpriseManagementException("JSON data has invalid values: FILENAME")
 
+        # 4. Generar los datos del documento y calcular la firma SHA-256 directamente
+        alg = "SHA-256"
+        typ = "DOCUMENT"
+        justnow = datetime.now(timezone.utc)
+        register_date = datetime.timestamp(justnow)
+
+        text_to_encode = f"{{alg:{alg}, typ:{typ}, project_id:{project_id}, file_name:{file_name}}}"
+        file_signature = hashlib.sha256(text_to_encode.encode()).hexdigest()
+
+        document_data = {
+            "alg": alg,
+            "typ": typ,
+            "project_id": project_id,
+            "file_name": file_name,
+            "register_date": register_date,
+            "file_signature": file_signature
+        }
+
     @staticmethod
     def validate_cif(cif: str):
         cif = cif.upper()
