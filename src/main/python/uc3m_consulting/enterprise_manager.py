@@ -64,6 +64,12 @@ class EnterpriseManager:
 
         project_id = data.get("PROJECT_ID")
         file_name = data.get("FILENAME")
+        # se validan los valores
+        if not isinstance(project_id, str) or not re.match(r'^[0-9a-fA-F]{32}$', project_id):
+            raise EnterpriseManagementException("JSON data has invalid values: PROJECT_ID")
+
+        if not isinstance(file_name, str) or not re.match(r'^[a-zA-Z0-9]{8}\.(pdf|docx|xlsx)$', file_name):
+            raise EnterpriseManagementException("JSON data has invalid values: FILENAME")
 
     @staticmethod
     def validate_cif(cif: str):
