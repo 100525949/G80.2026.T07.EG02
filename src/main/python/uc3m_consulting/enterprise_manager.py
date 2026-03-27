@@ -12,6 +12,7 @@ class EnterpriseManager:
     def __init__(self):
         pass
 
+    # metodo 1
     def register_project(self, company_cif: str, project_acronym: str,
                          project_description: str, date: str,
                          department: str, budget: float) -> str:
@@ -47,6 +48,7 @@ class EnterpriseManager:
             json.dump(data_list, file, indent=4)
         return my_project.project_id
 
+    # metodo 2
     def register_document(self, input_file: str) -> str:
         """Registers a document from a JSON file and returns its SHA-256 signature"""
         # lee el json de entrada
@@ -108,6 +110,11 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Internal error saving document") from e
 
         return file_signature
+
+    # metodo 3
+    def check_project_budget(self, project_id: str) -> bool:
+        """Reads flows.json, calculates the budget for a project, and saves the result"""
+
 
     @staticmethod
     def validate_cif(cif: str):
