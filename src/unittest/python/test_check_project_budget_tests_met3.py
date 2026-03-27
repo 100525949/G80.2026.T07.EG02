@@ -103,3 +103,38 @@ class TestCheckProjectBudget(unittest.TestCase):
         with open(BALANCES_FILE, "r", encoding="utf-8") as f:
             balances = json.load(f)
             self.assertEqual(balances[0]["balance"], 1500.0)  # 2000 - 500
+
+    def test_08_loop_n_times_mixed_data_and_value_error(self):
+        """Ruta 4 (exito - n iteraciones + Prueba de excepciones internas de valores raros)"""
+        data = [
+            {"PROJECT_ID": "otro_proyecto_ignorado", "inflow": "9999"},
+            {"PROJECT_ID": self.valid_id, "inflow": "1000"},
+            {"PROJECT_ID": self.valid_id, "outflow": "texto_invalido"},  # Entra al except ValueError
+            {"PROJECT_ID": self.valid_id, "outflow": "300"}
+        ]
+        self._create_flows_file(data)
+
+        result = self.manager.check_project_budget(self.valid_id)
+        self.assertTrue(result)
+
+        with open(BALANCES_FILE, "r", encoding="utf-8") as f:
+            balances = json.load(f)
+            self.assertEqual(balances[0]["balance"], 700.0)  # 1000 - 300 (el texto_invalido se ignora)
+
+    def test_09_balances_file_corrupted(self):
+        """Ruta 4b: recrea el archivo de balances si el anterior estaba corrupto"""
+        self._create_flows_file([{"PROJECT_ID": self.valid_id, "inflow": "100"}])
+
+        # corrompemos el archivo de salida
+        with open(BALANCES_FILE, "w", encoding="utf-8") as f:
+            f.write("esto no es un json")
+
+        result = self.manager.check_project_budget(self.valid_id)
+        self.assertTrue(result)
+
+        with open(BALANCES_FILE, "r", encoding="utf-8") as f:
+            balances = json.load(f)
+            self.assertEqual(balances[0]["balance"], 100.0)
+
+if __name__ == '__main__':
+    unittest.main()
