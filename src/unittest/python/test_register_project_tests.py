@@ -160,5 +160,17 @@ class MyTestCase(unittest.TestCase):
             f.write(content)
         return file_path
 
+    def test_18_valid(self):
+        """Test 1 metodo 2 -> Caso válido base"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_01_valid.json", content)
+
+        my_manager = EnterpriseManager()
+        valor_devuelto = my_manager.register_document(file_path)
+
+        self.assertIsInstance(valor_devuelto, str)
+        self.assertEqual(len(valor_devuelto), 64)
+        os.remove(file_path)
+
 if __name__ == '__main__':
     unittest.main()
