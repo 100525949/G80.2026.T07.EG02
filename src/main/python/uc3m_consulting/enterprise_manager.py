@@ -90,7 +90,7 @@ class EnterpriseManager:
         }
 
         # guarda el documento firmado
-        json_files_path = os.path.join(os.path.dirname(__file__), "../../../unittest/")
+        json_files_path = os.path.join(os.path.dirname(__file__), "../../../unittest/jsonfiles")
         store_file = os.path.join(json_files_path, "registered_documents.json")
 
         try:
