@@ -71,7 +71,7 @@ class EnterpriseManager:
         if not isinstance(file_name, str) or not re.match(r'^[a-zA-Z0-9]{8}\.(pdf|docx|xlsx)$', file_name):
             raise EnterpriseManagementException("JSON data has invalid values: FILENAME")
 
-        # 4. Generar los datos del documento y calcular la firma SHA-256 directamente
+        # calcular el sha
         alg = "SHA-256"
         typ = "DOCUMENT"
         justnow = datetime.now(timezone.utc)
