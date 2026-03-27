@@ -74,3 +74,32 @@ class TestCheckProjectBudget(unittest.TestCase):
         with self.assertRaises(EnterpriseManagementException) as cm:
             self.manager.check_project_budget(self.valid_id)
         self.assertEqual(cm.exception.message, "ERROR: PROJECT_ID not found in flows.json")
+
+    def test_06_loop_1_time_success(self):
+        """Ruta 4 (exito - bucle con 1 iteración): solo hay un solo registro y es nuestro proyecto"""
+        data = [{"PROJECT_ID": self.valid_id, "inflow": "1500.50"}]
+        self._create_flows_file(data)
+
+        result = self.manager.check_project_budget(self.valid_id)
+        self.assertTrue(result)
+
+        # miramos si se guarda el balance bien
+        with open(BALANCES_FILE, "r", encoding="utf-8") as f:
+            balances = json.load(f)
+            self.assertEqual(balances[0]["balance"], 1500.50)
+            self.assertEqual(balances[0]["project_id"], self.valid_id)
+
+    def test_07_loop_2_times_success(self):
+        """Ruta 4 (exito - bucle con 2 iteraciones): un inflow + un outflow"""
+        data = [
+            {"PROJECT_ID": self.valid_id, "inflow": "2000.0"},
+            {"PROJECT_ID": self.valid_id, "outflow": "500.0"}
+        ]
+        self._create_flows_file(data)
+
+        result = self.manager.check_project_budget(self.valid_id)
+        self.assertTrue(result)
+
+        with open(BALANCES_FILE, "r", encoding="utf-8") as f:
+            balances = json.load(f)
+            self.assertEqual(balances[0]["balance"], 1500.0)  # 2000 - 500
