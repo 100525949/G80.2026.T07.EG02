@@ -29,3 +29,17 @@ class TestCheckProjectBudget(unittest.TestCase):
             os.remove(FLOWS_FILE)
         if os.path.exists(BALANCES_FILE):
             os.remove(BALANCES_FILE)
+
+    def _create_flows_file(self, content):
+        """Crea el archivo flows.json con el contenido que le pasemos"""
+        with open(FLOWS_FILE, "w", encoding="utf-8") as f:
+            if isinstance(content, str):
+                f.write(content)
+            else:
+                json.dump(content, f)
+
+    def test_01_invalid_project_id(self):
+        """Ruta 1: El ID no cumple el formato"""
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            self.manager.check_project_budget("ID_CORTO_O_INVALIDO")
+        self.assertEqual(cm.exception.message, "ERROR: Invalid PROJECT_ID format")
