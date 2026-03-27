@@ -157,6 +157,28 @@ class EnterpriseManager:
         final_balance = total_inflow - total_outflow
         result_file = os.path.join(json_files_path, "project_balances.json")
 
+        try:
+            try:
+                with open(result_file, "r", encoding="utf-8") as file:
+                    balances_data = json.load(file)
+            except (FileNotFoundError, json.JSONDecodeError):
+                balances_data = []
+
+            justnow = datetime.now(timezone.utc)
+            new_record = {
+                "project_id": project_id,
+                "balance": final_balance,
+                "timestamp": datetime.timestamp(justnow)
+            }
+            balances_data.append(new_record)
+
+            with open(result_file, "w", encoding="utf-8") as file:
+                json.dump(balances_data, file, indent=4)
+
+        except Exception as e:
+            raise EnterpriseManagementException("ERROR: Could not save balance result") from e
+
+        return True
 
 
     @staticmethod
