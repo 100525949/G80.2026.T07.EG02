@@ -172,5 +172,16 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(len(valor_devuelto), 64)
         os.remove(file_path)
 
+    def test_19_invalid(self):
+        """Test 2 metodo 2 -> omisión de la clave PROJECT_ID"""
+        content = '{"FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_02_omit_id.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON does not have the expected structure")
+        os.remove(file_path)
+
 if __name__ == '__main__':
     unittest.main()
