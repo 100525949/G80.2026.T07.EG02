@@ -89,6 +89,24 @@ class EnterpriseManager:
             "file_signature": file_signature
         }
 
+        # guarda el documento firmado
+        json_files_path = os.path.join(os.path.dirname(__file__), "../../../unittest/")
+        store_file = os.path.join(json_files_path, "registered_documents.json")
+
+        try:
+            with open(store_file, "r", encoding="utf-8", newline="") as file:
+                data_list = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            data_list = []
+
+        data_list.append(document_data)
+
+        try:
+            with open(store_file, "w", encoding="utf-8", newline="") as file:
+                json.dump(data_list, file, indent=4)
+        except Exception as e:
+            raise EnterpriseManagementException("Internal error saving document") from e
+
     @staticmethod
     def validate_cif(cif: str):
         cif = cif.upper()
