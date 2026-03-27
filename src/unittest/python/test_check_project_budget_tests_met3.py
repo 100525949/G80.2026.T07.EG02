@@ -56,3 +56,21 @@ class TestCheckProjectBudget(unittest.TestCase):
         with self.assertRaises(EnterpriseManagementException) as cm:
             self.manager.check_project_budget(self.valid_id)
         self.assertEqual(cm.exception.message, "ERROR: flows.json is not a valid JSON")
+
+    def test_04_loop_0_times_project_not_found(self):
+        """Ruta 3.1 (Bucle con 0 iteraciones o sin match): el json es una lista vacía"""
+        self._create_flows_file([])
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            self.manager.check_project_budget(self.valid_id)
+        self.assertEqual(cm.exception.message, "ERROR: PROJECT_ID not found in flows.json")
+
+    def test_05_loop_n_times_project_not_found(self):
+        """Ruta 3.2: hay datos en el bucle, pero ninguno es nuestro proyecto, no nos valen"""
+        data = [
+            {"PROJECT_ID": "f6b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "inflow": "100"},
+            {"PROJECT_ID": "c3d4e5f6a1b2c3d4e5f6a1b2c3d4a1b2", "outflow": "50"}
+        ]
+        self._create_flows_file(data)
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            self.manager.check_project_budget(self.valid_id)
+        self.assertEqual(cm.exception.message, "ERROR: PROJECT_ID not found in flows.json")
