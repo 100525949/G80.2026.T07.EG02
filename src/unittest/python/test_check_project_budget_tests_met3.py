@@ -43,3 +43,16 @@ class TestCheckProjectBudget(unittest.TestCase):
         with self.assertRaises(EnterpriseManagementException) as cm:
             self.manager.check_project_budget("ID_CORTO_O_INVALIDO")
         self.assertEqual(cm.exception.message, "ERROR: Invalid PROJECT_ID format")
+
+    def test_02_file_not_found(self):
+        """Ruta 2.1: El archivo flows.json no existe"""
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            self.manager.check_project_budget(self.valid_id)
+        self.assertEqual(cm.exception.message, "ERROR: flows.json file not found")
+
+    def test_03_invalid_json_format(self):
+        """Ruta 2.2: El archivo existe pero está corrupto"""
+        self._create_flows_file("{ este_json_esta_roto")
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            self.manager.check_project_budget(self.valid_id)
+        self.assertEqual(cm.exception.message, "ERROR: flows.json is not a valid JSON")
