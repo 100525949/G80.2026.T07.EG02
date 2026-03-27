@@ -227,5 +227,27 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
         os.remove(file_path)
 
+    def test_24_invalid(self):
+        """Test 7  metodo 2 -> PROJECT_ID con letra no hexadecimal"""
+        content = '{"PROJECT_ID": "Z1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_07_mod_hex.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
+        os.remove(file_path)
+
+    def test_25_invalid(self):
+        """Test 8 metodo 2 -> FILENAME corto"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum01.pdf"}'
+        file_path = self._create_temp_file("test_08_mod_flen.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: FILENAME")
+        os.remove(file_path)
+
 if __name__ == '__main__':
     unittest.main()
