@@ -10,6 +10,8 @@ file_store = JSON_FILES_PATH + "corporate_operations.json"
 class MyTestCase(unittest.TestCase):
     """class for testing the register_project method"""
 
+    # tests metodo 1
+
     def setUp(self):
         """Se ejecuta antes de cada test para borrar el json y asegurar que los tests
         empiezan limpios"""
@@ -149,6 +151,14 @@ class MyTestCase(unittest.TestCase):
         with self.assertRaises(EnterpriseManagementException) as cm:
             my_manager.register_project("Q2812004A", "PROJ01", "Descrip valida", "18/02/2026", "HR", 100000.00)
         self.assertEqual(cm.exception.message, "ERROR: CIF not valid")
+
+    # tests del metodo 2
+    def _create_temp_file(self, filename: str, content: str) -> str:
+        """función para crear archivos json temporales en los tests"""
+        file_path = os.path.join(JSON_FILES_PATH, filename)
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        return file_path
 
 if __name__ == '__main__':
     unittest.main()
