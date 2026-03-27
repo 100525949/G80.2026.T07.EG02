@@ -2,7 +2,8 @@
 import json
 import re
 import os
-from datetime import datetime
+import hashlib
+from datetime import datetime, timezone
 from .enterprise_management_exception import EnterpriseManagementException
 from .enterprise_project import EnterpriseProject
 
