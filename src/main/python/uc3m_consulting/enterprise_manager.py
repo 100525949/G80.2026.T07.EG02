@@ -121,6 +121,35 @@ class EnterpriseManager:
         # lee el flows.json
         json_files_path = os.path.join(os.path.dirname(__file__), "../../../unittest/jsonfiles/")
         flows_file = os.path.join(json_files_path, "flows.json")
+        try:
+            with open(flows_file, "r", encoding="utf-8") as file:
+                flows_data = json.load(file)
+        except FileNotFoundError:
+            raise EnterpriseManagementException("ERROR: flows.json file not found")
+        except json.JSONDecodeError:
+            raise EnterpriseManagementException("ERROR: flows.json is not a valid JSON")
+
+        total_inflow = 0.0
+        total_outflow = 0.0
+        project_found = False
+
+        for flow in flows_data:
+            if flow.get("PROJECT_ID") == project_id:
+                project_found = True
+
+                # suma si hay inflow
+                if "inflow" in flow:
+                    try:
+                        total_inflow += float(flow["inflow"])
+                    except ValueError:
+                        pass
+
+                # restar si hay outflow
+                if "outflow" in flow:
+                    try:
+                        total_outflow += float(flow["outflow"])
+                    except ValueError:
+                        pass
 
     @staticmethod
     def validate_cif(cif: str):
