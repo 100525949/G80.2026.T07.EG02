@@ -58,6 +58,13 @@ class EnterpriseManager:
         except json.JSONDecodeError:
             raise EnterpriseManagementException("JSON Decode Error - File is not valid JSON")
 
+        # se comprueba la estructura del json
+        if not isinstance(data, dict) or "PROJECT_ID" not in data or "FILENAME" not in data:
+            raise EnterpriseManagementException("JSON does not have the expected structure")
+
+        project_id = data.get("PROJECT_ID")
+        file_name = data.get("FILENAME")
+
     @staticmethod
     def validate_cif(cif: str):
         cif = cif.upper()
