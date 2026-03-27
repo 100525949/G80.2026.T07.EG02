@@ -194,5 +194,18 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.message, "JSON does not have the expected structure")
         os.remove(file_path)
 
+    def test_21_invalid(self):
+        """Test 4 metodo 2 ->  PROJECT_ID duplicado"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "PROJECT_ID": "f6b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_04_dup_id.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
+        os.remove(file_path)
+
+
+
 if __name__ == '__main__':
     unittest.main()
