@@ -114,7 +114,13 @@ class EnterpriseManager:
     # metodo 3
     def check_project_budget(self, project_id: str) -> bool:
         """Reads flows.json, calculates the budget for a project, and saves the result"""
+        # valida que  project_id tiene formato hexadecimal
+        if not isinstance(project_id, str) or not re.match(r'^[0-9a-fA-F]{32}$', project_id):
+            raise EnterpriseManagementException("ERROR: Invalid PROJECT_ID format")
 
+        # lee el flows.json
+        json_files_path = os.path.join(os.path.dirname(__file__), "../../../unittest/jsonfiles/")
+        flows_file = os.path.join(json_files_path, "flows.json")
 
     @staticmethod
     def validate_cif(cif: str):
