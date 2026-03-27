@@ -107,6 +107,8 @@ class EnterpriseManager:
         except Exception as e:
             raise EnterpriseManagementException("Internal error saving document") from e
 
+        return file_signature
+
     @staticmethod
     def validate_cif(cif: str):
         cif = cif.upper()
