@@ -249,7 +249,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.message, "JSON data has invalid values: FILENAME")
         os.remove(file_path)
 
-    def test_26_register_document_mod_fchar(self):
+    def test_26_invalid(self):
         """Test 9 metodo 2 -> FILENAME con carácter no permitido (-)"""
         content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "doc-0001.pdf"}'
         file_path = self._create_temp_file("test_09_mod_fchar.json", content)
@@ -260,7 +260,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.message, "JSON data has invalid values: FILENAME")
         os.remove(file_path)
 
-    def test_27_register_document_mod_ext(self):
+    def test_27_invalid(self):
         """Test 10 metodo 2 -> extension del archivo no es válida (.txt)"""
         content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.txt"}'
         file_path = self._create_temp_file("test_10_mod_ext.json", content)
@@ -270,6 +270,26 @@ class MyTestCase(unittest.TestCase):
             my_manager.register_document(file_path)
         self.assertEqual(cm.exception.message, "JSON data has invalid values: FILENAME")
         os.remove(file_path)
+
+    def test_28_invalid(self):
+        """Test 11 metodo 2 -> falta la llave de cierre (genera Syntax Error)"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"'
+        file_path = self._create_temp_file("test_11_del_brace.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON Decode Error - File is not valid JSON")
+        os.remove(file_path)
+
+    def test_29_invalid(self):
+        """Test 12 metodo 2 -> ruta inexistente (el archivo no existe)"""
+        fake_path = os.path.join(JSON_FILES_PATH, "ruta_falsa_test_12.json")
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(fake_path)
+        self.assertEqual(cm.exception.message, "File is not found")
 
 if __name__ == '__main__':
     unittest.main()
