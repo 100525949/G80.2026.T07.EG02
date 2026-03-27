@@ -205,7 +205,27 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
         os.remove(file_path)
 
+    def test_22_invalid(self):
+        """Test 5 metodo 2 -> clave mal escrita"""
+        content = '{"PROYECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_05_mod_key.json", content)
 
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON does not have the expected structure")
+        os.remove(file_path)
+
+    def test_23_invalid(self):
+        """Test 6 metodo 2 -> Valor PROJECT_ID corto"""
+        content = '{"PROJECT_ID": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d", "FILENAME": "docum001.pdf"}'
+        file_path = self._create_temp_file("test_06_mod_len.json", content)
+
+        my_manager = EnterpriseManager()
+        with self.assertRaises(EnterpriseManagementException) as cm:
+            my_manager.register_document(file_path)
+        self.assertEqual(cm.exception.message, "JSON data has invalid values: PROJECT_ID")
+        os.remove(file_path)
 
 if __name__ == '__main__':
     unittest.main()
